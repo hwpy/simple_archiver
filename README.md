@@ -8,4 +8,4 @@
 2. Архивировать .7z, .zip, .rar (требуется установка brew install unrar) с паролем и без пароля
 
 ## Сборка с помощью pyinstaller:
-* pyinstaller --onefile --windowed --name="Simple archiver" --icon="media/appicon.png" simple_archiver.py
+* pyinstaller --windowed --name="Simple archiver" --icon="media/appicon.png" simple_archiver.py
