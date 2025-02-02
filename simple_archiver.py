@@ -1,9 +1,9 @@
 import os
 import subprocess
 import sys
-import zipfile
 
 import py7zr
+import pyzipper
 import rarfile
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
@@ -32,7 +32,6 @@ class SimpleArchiverApp(QWidget):
 
         layout = QVBoxLayout()
 
-
         # Выпадающий список для выбора типа архива
         self.archive_type_label = QLabel("Тип архива:", self)
         layout.addWidget(self.archive_type_label)
@@ -42,7 +41,6 @@ class SimpleArchiverApp(QWidget):
         self.archive_type_combo.addItem(".rar")
         self.archive_type_combo.addItem(".7z")
         layout.addWidget(self.archive_type_combo)
-
 
         self.password_label = QLabel("Пароль (необязательно):", self)
         layout.addWidget(self.password_label)
@@ -63,7 +61,6 @@ class SimpleArchiverApp(QWidget):
 
         layout.addLayout(password_layout)
 
-
         self.btn_unarchive = QPushButton("Разархивировать", self)
         self.btn_unarchive.clicked.connect(self.unarchive)
         layout.addWidget(self.btn_unarchive)
@@ -71,7 +68,6 @@ class SimpleArchiverApp(QWidget):
         self.btn_archive = QPushButton("Архивировать", self)
         self.btn_archive.clicked.connect(self.archive)
         layout.addWidget(self.btn_archive)
-
 
         self.setLayout(layout)
 
@@ -100,7 +96,7 @@ class SimpleArchiverApp(QWidget):
                 password = self.password_input.text() or None
                 try:
                     if file_path.endswith(".zip"):
-                        with zipfile.ZipFile(file_path, "r") as zip_ref:
+                        with pyzipper.AESZipFile(file_path, "r") as zip_ref:
                             if password:
                                 zip_ref.setpassword(password.encode())
                             zip_ref.extractall(extract_path)
@@ -136,24 +132,33 @@ class SimpleArchiverApp(QWidget):
             self, "Выберите файлы для архивации", "", "Все файлы (*)"
         )
         if files:
-            # Получаем выбранный тип архива
             archive_type = self.archive_type_combo.currentText()
-
-            # Указываем фильтр для сохранения файла
             archive_path, _ = QFileDialog.getSaveFileName(
                 self, "Сохранить архив как", "", f"Архивы (*{archive_type})"
             )
             if archive_path:
-                # Добавляем расширение, если оно не указано
                 if not archive_path.endswith(archive_type):
                     archive_path += archive_type
 
                 password = self.password_input.text() or None
                 try:
                     if archive_type == ".zip":
-                        with zipfile.ZipFile(archive_path, "w") as zip_ref:
+                        # Используем pyzipper с явным указанием параметров шифрования
+                        with (
+                            pyzipper.AESZipFile(
+                                archive_path,
+                                "w",
+                                compression=pyzipper.ZIP_DEFLATED,  # Используем стандартное сжатие
+                                encryption=pyzipper.WZ_AES
+                                if password
+                                else None,  # Шифрование только при наличии пароля
+                            ) as zip_ref
+                        ):
+                            if password:
+                                zip_ref.setpassword(password.encode())
                             for file in files:
                                 zip_ref.write(file, os.path.basename(file))
+
                     elif archive_type == ".rar":
                         # Проверка наличия rar
                         if not self.check_rar_installed():
