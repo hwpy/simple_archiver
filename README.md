@@ -14,7 +14,7 @@
 
 ## Сборка с помощью pyinstaller:
 macOS:
-* pyinstaller --windowed --name="Swiss knife" --icon="media/icons/mac/appicon-sk.icns" swiss_knife.py
+* builders/mac/build.sh
 
 Windows:
-* pyinstaller --onefile --windowed --name="Swiss knife" --add-data="media/icons/windows/appicon-sk.ico;." --icon="media/icons/windows/appicon-sk.ico" swiss_knife.py
+* builders\windows\build.ps1

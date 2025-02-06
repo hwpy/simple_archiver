@@ -6,34 +6,29 @@ from jinja2 import Template
 
 current_dir = Path(getcwd())
 sys.path.append(str(current_dir))
-from config import SwissKnifeConfig
-from platform_settings import Platform
-
-class Templates:
-    pybuilder_mac = "pybuilder_mac_template.md.j2"
-    pybuilder_win = "pybuilder_win_template.md.j2"
+from config import SwissKnifeConfig, JinjaTemplates
+from .platform_settings import Platform
 
 
-
-def pick_builder_template_by_os(config: SwissKnifeConfig) -> str:
+def pick_builder_template_by_os(config: SwissKnifeConfig) -> dict:
     if Platform.PLATFORM == Platform.Windows:
         params = {
-            config.build_params["app_name"],
-            config.build_params["win_icon_path"],
-            config.build_params["app_py"],
+            "app_name": config.build_params["app_name"],
+            "win_icon_path": config.build_params["win_icon_path"],
+            "app_py": config.build_params["app_py"],
         }
         return {
-            "builder": Templates.pybuilder_win,
+            "builder": JinjaTemplates.pybuilder_win,
             "params": params
         }
     elif Platform.PLATFORM == Platform.macOS:
         params = {
-            config.build_params["app_name"],
-            config.build_params["mac_icon_path"],
-            config.build_params["app_py"],
+            "app_name": config.build_params["app_name"],
+            "mac_icon_path": config.build_params["mac_icon_path"],
+            "app_py": config.build_params["app_py"],
         }
         return {
-            "builder": Templates.pybuilder_mac,
+            "builder": JinjaTemplates.pybuilder_mac,
             "params": params
         }
     else:
@@ -45,7 +40,6 @@ def build_pybuilder(config: SwissKnifeConfig) -> str:
     builder_template = pick_builder_template_by_os(config)
     with open(builder_template["builder"], "r") as f:
         template_str = f.read()
-
         template = Template(template_str)
         return template.render(
             builder_template["params"]
@@ -53,7 +47,7 @@ def build_pybuilder(config: SwissKnifeConfig) -> str:
 
 
 def build_readme(config: SwissKnifeConfig) -> None:
-    with open("templates/readme_template.md.j2", "r") as f:
+    with open(JinjaTemplates.readme) as f:
         template_str = f.read()
 
         template = Template(template_str)

@@ -45,5 +45,13 @@ class SwissKnifeConfig:
             icon_path = get_resource_path(SwissKnifeConfig.mac_icon_name)
         return icon_path
 
+
+class JinjaTemplates:
+    """Шаблоны для jinja"""
+    readme = "templates/readme_template.md.j2"
+    pybuilder_mac = "templates/pybuilder_mac_template.md.j2"
+    pybuilder_win = "templates/pybuilder_win_template.md.j2"
+
+
 class ArchiverConfig:
     pass
