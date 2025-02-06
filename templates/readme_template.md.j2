@@ -1,11 +1,11 @@
-# Swiss knife
-Версия: 0.1.2
+# {{ app_name }}
+Версия: {{ app_version }}
 
 <p align="center">
-    <img src="media/screenshots/screenshot_mac.png">
+    <img src="{{ screenshot_mac }}">
 </p>
 <p align="center">
-    <img src="media/screenshots/screenshot_win.png">
+    <img src="{{ screenshot_win }}">
 </p>
 
 ## На данный момент поддерживается
@@ -14,7 +14,7 @@
 
 ## Сборка с помощью pyinstaller:
 macOS:
-* pyinstaller --windowed --name="Swiss knife" --icon="media/icons/mac/appicon-sk.icns" swiss_knife.py
+* pyinstaller --windowed --name="{{ app_name }}" --icon="{{ mac_icon_path }}" {{ app_py }}
 
 Windows:
-* pyinstaller --onefile --windowed --name="Swiss knife" --add-data="media/icons/windows/appicon-sk.ico;." --icon="media/icons/windows/appicon-sk.ico" swiss_knife.py
+* pyinstaller --onefile --windowed --name="{{ app_name }}" --add-data="{{ win_icon_path }};." --icon="{{ win_icon_path }}" {{ app_py }}

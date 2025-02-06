@@ -5,7 +5,6 @@ import sys
 import py7zr
 import pyzipper
 import rarfile
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QApplication,
@@ -20,6 +19,9 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from packages.platform_settings import Platform
+from config import SwissKnifeConfig
+
 
 class SimpleArchiverApp(QWidget):
     def __init__(self):
@@ -27,7 +29,7 @@ class SimpleArchiverApp(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Простой архиватор")
+        self.setWindowTitle(SwissKnifeConfig.app_name)
         self.setGeometry(100, 100, 400, 200)
 
         layout = QVBoxLayout()
@@ -199,6 +201,9 @@ class SimpleArchiverApp(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    swiss_k_config = SwissKnifeConfig()
+    app.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для приложения
     window = SimpleArchiverApp()
+    window.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для окна
     window.show()
     sys.exit(app.exec_())
