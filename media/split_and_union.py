@@ -16,6 +16,10 @@ class ImageProcessor:
             self.img = 'media/screenshots/screenshot_mac.png'
             self.light_img = 'media/screenshots/screenshot_mac_light.png'
             self.dark_img = 'media/screenshots/screenshot_mac_dark.png'
+        elif Platform.OS == Platform.Windows:
+            self.img = 'media/screenshots/screenshot_win.png'
+            self.light_img = 'media/screenshots/screenshot_win_light.png'
+            self.dark_img = 'media/screenshots/screenshot_win_dark.png'
 
     def add_suffix_to_filename(self, file_path: str, suffix: str) -> str:
         # Разделите имя файла на путь, имя и расширение
