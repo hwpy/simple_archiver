@@ -17,8 +17,18 @@
 2. Архивировать .7z, .zip - с паролем / без пароля
 
 ## Сборка с помощью pyinstaller:
-macOS:
-* scripts/mac/build.sh
+### macOS:
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+scripts/mac/build.sh
+```
 
-Windows:
-* scripts\windows\build.ps1
+### Windows:
+```bash
+python -m venv venv
+venv\Scripts\activate - Windows
+pip install -r requirements.txt
+scripts\windows\build.ps1
+```
