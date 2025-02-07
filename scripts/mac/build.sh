@@ -27,9 +27,6 @@ from config.swiss_knife_config import SwissKnifeConfig
 scripts.build_tools.build_with_pyinstaller(SwissKnifeConfig)
 ')
 
-# Выводим команду для отладки (опционально)
-echo "Команда для сборки приложения: $command"
-
 # Выполняем команду в Bash
 eval "$command"
 

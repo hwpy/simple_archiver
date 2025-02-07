@@ -43,9 +43,6 @@ from config.swiss_knife_config import SwissKnifeConfig
 build_tools.build_with_pyinstaller(SwissKnifeConfig)
 "@
 
-# Выводим команду для отладки (опционально)
-Write-Output "Команда для сборки приложения: $command"
-
 # Сохраняем код во временный файл
 $tempFile = [System.IO.Path]::GetTempFileName()
 $command | Out-File -FilePath $tempFile -Encoding utf8
