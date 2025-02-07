@@ -28,7 +28,7 @@ if (-Not (Test-Path $pythonPath)) {
 & "$venv_path\Scripts\Activate.ps1"
 
 # Указываем абсолютный путь к папке "scripts"
-$scriptsPath = Resolve-Path -Path "scripts"
+$scriptsPath = Resolve-Path -Path "."
 $configPath = Resolve-Path -Path "config"
 
 Write-Output "Путь к utils: $scriptsPath"
