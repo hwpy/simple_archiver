@@ -18,7 +18,7 @@ class ArchiveManager:
         self.unrar_path = self.find_rar_unrar("unrar")
 
     def find_rar_unrar(self, rar_unrar: Literal["rar", "unrar"]):
-        default_path = ""
+        default_path = None
         if Platform.OS == Platform.Windows:
             default_path = rf"C:\Program Files\WinRAR\{rar_unrar}.exe"
         else:
