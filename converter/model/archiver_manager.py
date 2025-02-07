@@ -21,8 +21,6 @@ class ArchiveManager:
         default_path = None
         if Platform.OS == Platform.Windows:
             default_path = rf"C:\Program Files\WinRAR\{rar_unrar}.exe"
-        else:
-            default_path = rar_unrar
 
         """
         elif Platform.OS == Platform.macOS:
