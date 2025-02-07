@@ -6,9 +6,9 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
 from config.swiss_knife_config import SwissKnifeConfig
-from controller.swiss_knife_controller import SwissKnifeController
-from model.archiver_manager import ArchiveManager
-from view.swiss_knife_view import SwissKnifeView
+from converter.controller.swiss_knife_controller import SwissKnifeController
+from converter.model.archiver_manager import ArchiveManager
+from converter.view.swiss_knife_view import SwissKnifeView
 
 
 class SwissKnifeApp:
