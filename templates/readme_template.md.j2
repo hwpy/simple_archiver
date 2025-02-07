@@ -1,0 +1,24 @@
+# {{ app_name }}
+Версия: {{ app_version }}
+
+<p align="center">
+    <img src="{{ screenshot_mac }}">
+</p>
+<p align="center">
+    <img src="{{ screenshot_win }}">
+</p>
+
+## Требования
+1. python 3.10
+2. unrar (опционально, нужен для работы с *.rar)
+
+## На данный момент поддерживается
+1. Разархивировать .7z, .zip, .rar (требуется установка модуля rar: brew / macports / website) - с паролем / без пароля
+2. Архивировать .7z, .zip - с паролем / без пароля
+
+## Сборка с помощью pyinstaller:
+macOS:
+* builders/mac/build.sh
+
+Windows:
+* builders\windows\build.ps1
