@@ -9,8 +9,8 @@ current_dir = Path(os.getcwd())
 sys.path.append(str(current_dir.joinpath("packages")))
 sys.path.append(str(current_dir))
 
-from config import SwissKnifeConfig
-from packages.platform_settings import Platform
+from config.swiss_knife_config import SwissKnifeConfig
+from utils.platform_settings import Platform
 
 
 def create_icons_for_win(

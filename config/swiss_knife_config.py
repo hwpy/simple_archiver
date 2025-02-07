@@ -1,5 +1,5 @@
-from packages.app_settings import get_resource_path
-from packages.platform_settings import Platform
+from utils.app_settings import get_resource_path
+from utils.platform_settings import Platform
 
 
 class SwissKnifeConfig:

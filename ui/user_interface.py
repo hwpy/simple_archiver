@@ -12,8 +12,8 @@ from PyQt5.QtWidgets import (
     QSizePolicy,
 )
 
-from config import SwissKnifeConfig
-from packages.platform_settings import Platform
+from config.swiss_knife_config import SwissKnifeConfig
+from utils.platform_settings import Platform
 from swiss_knife import SwissKnifeApp
 
 

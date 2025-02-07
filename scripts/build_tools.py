@@ -8,8 +8,8 @@ from jinja2 import Template
 
 current_dir = Path(getcwd())
 sys.path.append(str(current_dir))
-from config import JinjaTemplates, SwissKnifeConfig
-from packages.platform_settings import Platform
+from config.swiss_knife_config import JinjaTemplates, SwissKnifeConfig
+from utils.platform_settings import Platform
 
 
 def pick_builder_template_by_os(config: SwissKnifeConfig) -> dict:

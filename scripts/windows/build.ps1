@@ -27,19 +27,19 @@ if (-Not (Test-Path $pythonPath)) {
 # Активируем виртуальное окружение
 & "$venv_path\Scripts\Activate.ps1"
 
-# Указываем абсолютный путь к папке "packages"
-$packagesPath = Resolve-Path -Path "packages"
-$rootPath = Resolve-Path -Path "."
+# Указываем абсолютный путь к папке "scripts"
+$scriptsPath = Resolve-Path -Path "scripts"
+$configPath = Resolve-Path -Path "config"
 
-Write-Output "Путь к packages: $packagesPath"
+Write-Output "Путь к utils: $scriptsPath"
 
 # Вызываем Python с многострочной командой
 $command = @"
 import sys
-sys.path.append(r"$packagesPath")
-sys.path.append(r"$rootPath")
-from packages import build_tools
-from config import SwissKnifeConfig
+sys.path.append(r"$scriptsPath")
+sys.path.append(r"$configPath")
+from scripts import build_tools
+from config.swiss_knife_config import SwissKnifeConfig
 build_tools.build_with_pyinstaller(SwissKnifeConfig)
 "@
 

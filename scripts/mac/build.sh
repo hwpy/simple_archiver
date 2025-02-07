@@ -21,10 +21,10 @@ source "$venv_path/bin/activate"
 # Вызываем Python и получаем вывод
 command=$(python -c '
 import sys
-sys.path.append("../packages")
-import packages.build_tools
-from config import SwissKnifeConfig
-packages.build_tools.build_with_pyinstaller(SwissKnifeConfig)
+sys.path.append("../scripts")
+import scripts.build_tools
+from config.swiss_knife_config import SwissKnifeConfig
+scripts.build_tools.build_with_pyinstaller(SwissKnifeConfig)
 ')
 
 # Выводим команду для отладки (опционально)

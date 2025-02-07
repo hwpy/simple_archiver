@@ -18,7 +18,7 @@
 
 ## Сборка с помощью pyinstaller:
 macOS:
-* builders/mac/build.sh
+* scripts/mac/build.sh
 
 Windows:
-* builders\windows\build.ps1
+* scripts\windows\build.ps1
