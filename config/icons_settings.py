@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image
 
 current_dir = Path(os.getcwd())
-sys.path.append(str(current_dir.joinpath("packages")))
+sys.path.append(str(current_dir.joinpath("utils")))
 sys.path.append(str(current_dir))
 
 from config.swiss_knife_config import SwissKnifeConfig
