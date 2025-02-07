@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from typing import Literal
 
 import py7zr
 import pyzipper
@@ -23,7 +24,154 @@ from PyQt5.QtWidgets import (
 from config import SwissKnifeConfig
 
 
-class SwissKnifeApp(QWidget):
+
+class ArchiveManager:
+    def __init__(self):
+        self.rar_path = self.find_rar_unrar("rar")
+        self.unrar_path = self.find_rar_unrar("unrar")
+
+    def find_rar_unrar(self, rar_unrar: Literal["rar", "unrar"]):
+        # Проверка наличия rar / unrar по умолчанию
+        if sys.platform == "win32":
+            default_path = rf"C:\Program Files\WinRAR\{rar_unrar}.exe"
+        elif sys.platform == "darwin":
+            default_path = f"/usr/local/bin/{rar_unrar}"
+        else:
+            default_path = rar_unrar
+
+        if os.path.exists(default_path):
+            return default_path
+
+        # Проверка переменных окружения
+        for path in os.environ["PATH"].split(os.pathsep):
+            rar_unrar_path = os.path.join(path, rar_unrar)
+            if os.path.exists(rar_unrar_path):
+                return rar_unrar_path
+
+        return None
+
+    def check_unrar_installed(self):
+        if self.unrar_path is None:
+            QMessageBox.warning(
+                self,
+                "Ошибка",
+                "Для работы с .rar архивами необходимо установить unrar / winrar."
+            )
+            return False
+        return True
+
+    def check_rar_installed(self):
+        if self.rar_path is None:
+            QMessageBox.warning(
+                self,
+                "Ошибка",
+                "Для работы с .rar архивами необходимо установить rar. / winrar"
+            )
+            return False
+        return True
+
+    def unarchive(self):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Выберите архив", "", "Архивы (*.7z *.zip *.rar)"
+        )
+        if file_path:
+            extract_path = QFileDialog.getExistingDirectory(
+                self, "Выберите папку для извлечения"
+            )
+            if extract_path:
+                password = self.password_input.text() or None
+                try:
+                    if file_path.endswith(".zip"):
+                        with pyzipper.AESZipFile(file_path, "r") as zip_ref:
+                            if password:
+                                zip_ref.setpassword(password.encode())
+                            zip_ref.extractall(extract_path)
+                    elif file_path.endswith(".rar"):
+                        if not self.check_unrar_installed():
+                            return
+                        try:
+                            with rarfile.RarFile(file_path, "r") as rar_ref:
+                                if password:
+                                    rar_ref.setpassword(password)
+                                rar_ref.extractall(extract_path)
+                        except rarfile.NeedFirstRarFile:
+                            QMessageBox.warning(
+                                self,
+                                "Ошибка",
+                                "Для работы с .rar архивами необходимо установить unrar."
+                            )
+                            return
+                    elif file_path.endswith(".7z"):
+                        with py7zr.SevenZipFile(
+                            file_path, mode="r", password=password
+                        ) as seven_zip_ref:
+                            seven_zip_ref.extractall(extract_path)
+                    QMessageBox.information(
+                        self, "Успех", "Разархивирование завершено успешно!"
+                    )
+                except Exception as e:
+                    QMessageBox.critical(
+                        self, "Ошибка", f"Ошибка при разархивировании: {str(e)}"
+                    )
+
+    def archive(self):
+        files, _ = QFileDialog.getOpenFileNames(
+            self, "Выберите файлы для архивации", "", "Все файлы (*)"
+        )
+        if files:
+            archive_type = self.archive_type_combo.currentText()
+            archive_path, _ = QFileDialog.getSaveFileName(
+                self, "Сохранить архив как", "", f"Архивы (*{archive_type})"
+            )
+            if archive_path:
+                if not archive_path.endswith(archive_type):
+                    archive_path += archive_type
+
+                password = self.password_input.text() or None
+                try:
+                    if archive_type == ".zip":
+                        with pyzipper.AESZipFile(
+                            archive_path,
+                            "w",
+                            compression=pyzipper.ZIP_DEFLATED,
+                            encryption=pyzipper.WZ_AES if password else None,
+                        ) as zip_ref:
+                            if password:
+                                zip_ref.setpassword(password.encode())
+                            for file in files:
+                                zip_ref.write(file, os.path.basename(file))
+
+                    elif archive_type == ".rar":
+                        QMessageBox.warning(
+                            self,
+                            ":(",
+                            "Работа с .rar архивами пока что не поддерживается."
+                        )
+                        return False
+                        # if not self.check_rar_installed():
+                        #     return
+                        # rar_cmd = [self.rar_path, "a", archive_path] + files
+                        # if password:
+                        #     rar_cmd.insert(2, f"-p{password}")
+                        # subprocess.run(rar_cmd, check=True)
+
+                    elif archive_type == ".7z":
+                        with py7zr.SevenZipFile(
+                            archive_path, "w", password=password
+                        ) as seven_zip_ref:
+                            for file in files:
+                                seven_zip_ref.write(file, os.path.basename(file))
+
+                    QMessageBox.information(
+                        self, "Успех", "Архивация завершена успешно!"
+                    )
+                except Exception as e:
+                    QMessageBox.critical(
+                        self, "Ошибка", f"Ошибка при архивации: {str(e)}"
+                    )
+
+
+class SwissKnifeApp(QWidget, ArchiveManager):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -85,116 +233,6 @@ class SwissKnifeApp(QWidget):
             self.toggle_password_btn.setIcon(
                 QIcon.fromTheme("visibility")
             )  # Иконка "глаз открыт"
-
-    def unarchive(self):
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, "Выберите архив", "", "Архивы (*.7z *.zip *.rar)"
-        )
-        if file_path:
-            extract_path = QFileDialog.getExistingDirectory(
-                self, "Выберите папку для извлечения"
-            )
-            if extract_path:
-                password = self.password_input.text() or None
-                try:
-                    if file_path.endswith(".zip"):
-                        with pyzipper.AESZipFile(file_path, "r") as zip_ref:
-                            if password:
-                                zip_ref.setpassword(password.encode())
-                            zip_ref.extractall(extract_path)
-                    elif file_path.endswith(".rar"):
-                        try:
-                            with rarfile.RarFile(file_path, "r") as rar_ref:
-                                if password:
-                                    rar_ref.setpassword(password)
-                                rar_ref.extractall(extract_path)
-                        except rarfile.NeedFirstRarFile:
-                            QMessageBox.warning(
-                                self,
-                                "Ошибка",
-                                "Для работы с .rar архивами необходимо установить unrar."
-                            )
-                            return
-                    elif file_path.endswith(".7z"):
-                        with py7zr.SevenZipFile(
-                            file_path, mode="r", password=password
-                        ) as seven_zip_ref:
-                            seven_zip_ref.extractall(extract_path)
-                    QMessageBox.information(
-                        self, "Успех", "Разархивирование завершено успешно!"
-                    )
-                except Exception as e:
-                    QMessageBox.critical(
-                        self, "Ошибка", f"Ошибка при разархивировании: {str(e)}"
-                    )
-
-    def archive(self):
-        files, _ = QFileDialog.getOpenFileNames(
-            self, "Выберите файлы для архивации", "", "Все файлы (*)"
-        )
-        if files:
-            archive_type = self.archive_type_combo.currentText()
-            archive_path, _ = QFileDialog.getSaveFileName(
-                self, "Сохранить архив как", "", f"Архивы (*{archive_type})"
-            )
-            if archive_path:
-                if not archive_path.endswith(archive_type):
-                    archive_path += archive_type
-
-                password = self.password_input.text() or None
-                try:
-                    if archive_type == ".zip":
-                        # Используем pyzipper с явным указанием параметров шифрования
-                        with (
-                            pyzipper.AESZipFile(
-                                archive_path,
-                                "w",
-                                compression=pyzipper.ZIP_DEFLATED,  # Используем стандартное сжатие
-                                encryption=pyzipper.WZ_AES
-                                if password
-                                else None,  # Шифрование только при наличии пароля
-                            ) as zip_ref
-                        ):
-                            if password:
-                                zip_ref.setpassword(password.encode())
-                            for file in files:
-                                zip_ref.write(file, os.path.basename(file))
-
-                    elif archive_type == ".rar":
-                        # Проверка наличия rar
-                        if not self.check_rar_installed():
-                            QMessageBox.warning(
-                                self,
-                                "Ошибка",
-                                "Для создания .rar архивов необходимо установить rar."
-                            )
-                            return
-                        # Используем команду rar для создания архива
-                        rar_cmd = ["rar", "a", archive_path] + files
-                        if password:
-                            rar_cmd.insert(2, f"-p{password}")
-                        subprocess.run(rar_cmd, check=True)
-                    elif archive_type == ".7z":
-                        with py7zr.SevenZipFile(
-                            archive_path, "w", password=password
-                        ) as seven_zip_ref:
-                            for file in files:
-                                seven_zip_ref.write(file, os.path.basename(file))
-                    QMessageBox.information(
-                        self, "Успех", "Архивация завершена успешно!"
-                    )
-                except Exception as e:
-                    QMessageBox.critical(
-                        self, "Ошибка", f"Ошибка при архивации: {str(e)}"
-                    )
-
-    def check_rar_installed(self):
-        """Проверяет, установлен ли rar."""
-        try:
-            subprocess.run(["rar"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            return True
-        except FileNotFoundError:
-            return False
 
 
 if __name__ == "__main__":
