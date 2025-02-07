@@ -1,5 +1,6 @@
 # model.py
 import os
+from pathlib import Path
 import subprocess
 import sys
 from typing import Literal
@@ -8,6 +9,8 @@ import py7zr
 import pyzipper
 import rarfile
 
+from utils.platform_settings import Platform
+
 
 class ArchiveManager:
     def __init__(self):
@@ -15,12 +18,22 @@ class ArchiveManager:
         self.unrar_path = self.find_rar_unrar("unrar")
 
     def find_rar_unrar(self, rar_unrar: Literal["rar", "unrar"]):
-        if sys.platform == "win32":
+        default_path = ""
+        if Platform.OS == Platform.Windows:
             default_path = rf"C:\Program Files\WinRAR\{rar_unrar}.exe"
-        elif sys.platform == "darwin":
-            default_path = f"/usr/local/bin/{rar_unrar}"
         else:
             default_path = rar_unrar
+
+        """
+        elif Platform.OS == Platform.macOS:
+            paths_to_check = [
+                f"/usr/local/bin/{rar_unrar}",
+                f"/opt/local/bin/{rar_unrar}"
+            ]
+            for path in paths_to_check:
+                if os.path.exists(path):
+                    default_path = path
+        """
 
         if os.path.exists(default_path):
             return default_path
