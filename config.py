@@ -1,20 +1,16 @@
-from os import getcwd
-from os.path import join
-
-from packages.platform_settings import Platform
 from packages.app_settings import get_resource_path
+from packages.platform_settings import Platform
+
 
 class SwissKnifeConfig:
-
     app_name = "Swiss knife"
     app_source = "swiss_knife.py"
-    app_version = "0.2.1"
+    app_version = "0.2.0"
 
     screenshot_mac_name = "screenshot_mac.png"
     screenshot_win_name = "screenshot_win.png"
     screenshot_mac_path = f"media/screenshots/{screenshot_mac_name}"
     screenshot_win_path = f"media/screenshots/{screenshot_win_name}"
-
 
     png_icon_name = "appicon-sk-rounded.png"
     mac_icon_name = "appicon-sk.icns"
@@ -39,18 +35,19 @@ class SwissKnifeConfig:
         self.icon_path = self.setup_icons_by_platform()
 
     def setup_icons_by_platform(self) -> str:
-        if Platform.PLATFORM == Platform.Windows:
+        if Platform.OS == Platform.Windows:
             icon_path = get_resource_path(SwissKnifeConfig.win_icon_name)
-        elif Platform.PLATFORM == Platform.macOS:
+        elif Platform.OS == Platform.macOS:
             icon_path = get_resource_path(SwissKnifeConfig.mac_icon_name)
         return icon_path
 
 
 class JinjaTemplates:
     """Шаблоны для jinja"""
+
     readme = "templates/readme_template.md.j2"
-    pybuilder_mac = "templates/pybuilder_mac_template.md.j2"
-    pybuilder_win = "templates/pybuilder_win_template.md.j2"
+    pyinstaller_mac = "templates/pyinstaller_mac_template.md.j2"
+    pyinstaller_win = "templates/pyinstaller_win_template.md.j2"
 
 
 class ArchiverConfig:

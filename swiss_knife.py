@@ -4,6 +4,7 @@ import sys
 
 import py7zr
 import pyzipper
+import qdarktheme
 import rarfile
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
@@ -19,11 +20,10 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from packages.platform_settings import Platform
 from config import SwissKnifeConfig
 
 
-class SimpleArchiverApp(QWidget):
+class SwissKnifeApp(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -112,8 +112,7 @@ class SimpleArchiverApp(QWidget):
                             QMessageBox.warning(
                                 self,
                                 "Ошибка",
-                                "Для работы с .rar архивами необходимо установить unrar.\n"
-                                "Установите его с помощью команды: brew install unrar",
+                                "Для работы с .rar архивами необходимо установить unrar."
                             )
                             return
                     elif file_path.endswith(".7z"):
@@ -167,8 +166,7 @@ class SimpleArchiverApp(QWidget):
                             QMessageBox.warning(
                                 self,
                                 "Ошибка",
-                                "Для создания .rar архивов необходимо установить rar.\n"
-                                "Установите его с помощью команды: brew install rar",
+                                "Для создания .rar архивов необходимо установить rar."
                             )
                             return
                         # Используем команду rar для создания архива
@@ -201,9 +199,14 @@ class SimpleArchiverApp(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    qdarktheme.setup_theme("auto")  # Автоматическая синхронизация с системной темой
     swiss_k_config = SwissKnifeConfig()
-    app.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для приложения
-    window = SimpleArchiverApp()
-    window.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для окна
+    app.setWindowIcon(
+        QIcon(swiss_k_config.icon_path)
+    )  # Устанавливаем иконку для приложения
+    window = SwissKnifeApp()
+    window.setWindowIcon(
+        QIcon(swiss_k_config.icon_path)
+    )  # Устанавливаем иконку для окна
     window.show()
     sys.exit(app.exec_())

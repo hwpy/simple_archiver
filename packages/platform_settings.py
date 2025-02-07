@@ -4,6 +4,6 @@ import platform
 class Platform:
     macOS = "Darwin"
     Windows = "Windows"
-    Linux ="Linux"
+    Linux = "Linux"
 
-    PLATFORM = platform.system()
+    OS = platform.system()

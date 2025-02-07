@@ -1,3 +1,5 @@
+import ast
+import subprocess
 import sys
 from os import getcwd
 from pathlib import Path
@@ -6,44 +8,40 @@ from jinja2 import Template
 
 current_dir = Path(getcwd())
 sys.path.append(str(current_dir))
-from config import SwissKnifeConfig, JinjaTemplates
-from .platform_settings import Platform
+from config import JinjaTemplates, SwissKnifeConfig
+from packages.platform_settings import Platform
 
 
 def pick_builder_template_by_os(config: SwissKnifeConfig) -> dict:
-    if Platform.PLATFORM == Platform.Windows:
+    if Platform.OS == Platform.Windows:
         params = {
             "app_name": config.build_params["app_name"],
             "win_icon_path": config.build_params["win_icon_path"],
             "app_py": config.build_params["app_py"],
         }
-        return {
-            "builder": JinjaTemplates.pybuilder_win,
-            "params": params
-        }
-    elif Platform.PLATFORM == Platform.macOS:
+        return {"builder": JinjaTemplates.pyinstaller_win, "params": params}
+    elif Platform.OS == Platform.macOS:
         params = {
             "app_name": config.build_params["app_name"],
             "mac_icon_path": config.build_params["mac_icon_path"],
             "app_py": config.build_params["app_py"],
         }
-        return {
-            "builder": JinjaTemplates.pybuilder_mac,
-            "params": params
-        }
+        return {"builder": JinjaTemplates.pyinstaller_mac, "params": params}
     else:
         raise SystemError("Данная ОС на текущий момент не поддерживается!")
 
 
-def build_pybuilder(config: SwissKnifeConfig) -> str:
-
+def build_with_pyinstaller(config: SwissKnifeConfig) -> None:
     builder_template = pick_builder_template_by_os(config)
     with open(builder_template["builder"], "r") as f:
         template_str = f.read()
         template = Template(template_str)
-        return template.render(
-            builder_template["params"]
-        )
+        command = template.render(builder_template["params"])
+        try:
+            output = subprocess.check_output(ast.literal_eval(command))
+            print(output.decode("utf-8"))
+        except subprocess.CalledProcessError as e:
+            print(f"Ошибка при выполнении команды: {e}")
 
 
 def build_readme(config: SwissKnifeConfig) -> None:
@@ -56,10 +54,6 @@ def build_readme(config: SwissKnifeConfig) -> None:
             app_version=config.build_params["app_version"],
             screenshot_mac=config.build_params["screenshot_mac"],
             screenshot_win=config.build_params["screenshot_win"],
-            mac_icon_path=config.build_params["mac_icon_path"],
-            win_icon_path=config.build_params["win_icon_path"],
-            add_data=config.build_params["add_data"],
-            app_py=config.build_params["app_py"],
         )
 
     with open("README.md", "w") as file:
@@ -68,3 +62,4 @@ def build_readme(config: SwissKnifeConfig) -> None:
 
 if __name__ == "__main__":
     build_readme(SwissKnifeConfig)
+    # build_with_pyinstaller(SwissKnifeConfig)

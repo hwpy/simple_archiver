@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ -d "venv" ]; then
     venv_path="venv";
 else
@@ -22,7 +24,7 @@ import sys
 sys.path.append("../packages")
 import packages.build_tools
 from config import SwissKnifeConfig
-print(packages.build_tools.build_pybuilder(SwissKnifeConfig))
+packages.build_tools.build_with_pyinstaller(SwissKnifeConfig)
 ')
 
 # Выводим команду для отладки (опционально)

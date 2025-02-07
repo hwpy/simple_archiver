@@ -59,12 +59,12 @@ def create_icons_for_mac(input_png_path: str, output_ico_path: str):
 
 
 if __name__ == "__main__":
-    if Platform.PLATFORM == Platform.Windows:
+    if Platform.OS == Platform.Windows:
         create_icons_for_win(
             input_png_path=SwissKnifeConfig.png_icon_path,
             output_ico_path=SwissKnifeConfig.win_icon_path,
         )
-    elif Platform.PLATFORM == Platform.macOS:
+    elif Platform.OS == Platform.macOS:
         create_icons_for_mac(
             input_png_path=SwissKnifeConfig.png_icon_path,
             output_ico_path=SwissKnifeConfig.mac_icon_path,
