@@ -1,0 +1,3 @@
+[tool.ruff]
+extend = "~/.config/ruff/pyproject.toml"
+
