@@ -24,7 +24,6 @@ from PyQt5.QtWidgets import (
 from config import SwissKnifeConfig
 
 
-
 class ArchiveManager:
     def __init__(self):
         self.rar_path = self.find_rar_unrar("rar")
@@ -53,9 +52,7 @@ class ArchiveManager:
     def check_unrar_installed(self):
         if self.unrar_path is None:
             QMessageBox.warning(
-                self,
-                "Ошибка",
-                "Для работы с .rar архивами необходимо установить unrar / winrar."
+                self, "Ошибка", "Для работы с .rar архивами необходимо установить unrar / winrar."
             )
             return False
         return True
@@ -63,9 +60,7 @@ class ArchiveManager:
     def check_rar_installed(self):
         if self.rar_path is None:
             QMessageBox.warning(
-                self,
-                "Ошибка",
-                "Для работы с .rar архивами необходимо установить rar. / winrar"
+                self, "Ошибка", "Для работы с .rar архивами необходимо установить rar. / winrar"
             )
             return False
         return True
@@ -75,9 +70,7 @@ class ArchiveManager:
             self, "Выберите архив", "", "Архивы (*.7z *.zip *.rar)"
         )
         if file_path:
-            extract_path = QFileDialog.getExistingDirectory(
-                self, "Выберите папку для извлечения"
-            )
+            extract_path = QFileDialog.getExistingDirectory(self, "Выберите папку для извлечения")
             if extract_path:
                 password = self.password_input.text() or None
                 try:
@@ -98,7 +91,7 @@ class ArchiveManager:
                             QMessageBox.warning(
                                 self,
                                 "Ошибка",
-                                "Для работы с .rar архивами необходимо установить unrar."
+                                "Для работы с .rar архивами необходимо установить unrar.",
                             )
                             return
                     elif file_path.endswith(".7z"):
@@ -106,13 +99,9 @@ class ArchiveManager:
                             file_path, mode="r", password=password
                         ) as seven_zip_ref:
                             seven_zip_ref.extractall(extract_path)
-                    QMessageBox.information(
-                        self, "Успех", "Разархивирование завершено успешно!"
-                    )
+                    QMessageBox.information(self, "Успех", "Разархивирование завершено успешно!")
                 except Exception as e:
-                    QMessageBox.critical(
-                        self, "Ошибка", f"Ошибка при разархивировании: {str(e)}"
-                    )
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка при разархивировании: {str(e)}")
 
     def archive(self):
         files, _ = QFileDialog.getOpenFileNames(
@@ -143,9 +132,7 @@ class ArchiveManager:
 
                     elif archive_type == ".rar":
                         QMessageBox.warning(
-                            self,
-                            ":(",
-                            "Работа с .rar архивами пока что не поддерживается."
+                            self, ":(", "Работа с .rar архивами пока что не поддерживается."
                         )
                         return False
                         # if not self.check_rar_installed():
@@ -162,13 +149,9 @@ class ArchiveManager:
                             for file in files:
                                 seven_zip_ref.write(file, os.path.basename(file))
 
-                    QMessageBox.information(
-                        self, "Успех", "Архивация завершена успешно!"
-                    )
+                    QMessageBox.information(self, "Успех", "Архивация завершена успешно!")
                 except Exception as e:
-                    QMessageBox.critical(
-                        self, "Ошибка", f"Ошибка при архивации: {str(e)}"
-                    )
+                    QMessageBox.critical(self, "Ошибка", f"Ошибка при архивации: {str(e)}")
 
 
 class SwissKnifeApp(QWidget, ArchiveManager):
@@ -199,9 +182,7 @@ class SwissKnifeApp(QWidget, ArchiveManager):
         password_layout = QHBoxLayout()
 
         self.password_input = QLineEdit(self)
-        self.password_input.setEchoMode(
-            QLineEdit.Password
-        )  # Скрываем пароль звездочками
+        self.password_input.setEchoMode(QLineEdit.Password)  # Скрываем пароль звездочками
         password_layout.addWidget(self.password_input)
 
         self.toggle_password_btn = QPushButton("Видимость", self)
@@ -230,21 +211,15 @@ class SwissKnifeApp(QWidget, ArchiveManager):
             )  # Иконка "глаз закрыт"
         else:
             self.password_input.setEchoMode(QLineEdit.Password)  # Скрываем пароль
-            self.toggle_password_btn.setIcon(
-                QIcon.fromTheme("visibility")
-            )  # Иконка "глаз открыт"
+            self.toggle_password_btn.setIcon(QIcon.fromTheme("visibility"))  # Иконка "глаз открыт"
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     qdarktheme.setup_theme("auto")  # Автоматическая синхронизация с системной темой
     swiss_k_config = SwissKnifeConfig()
-    app.setWindowIcon(
-        QIcon(swiss_k_config.icon_path)
-    )  # Устанавливаем иконку для приложения
+    app.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для приложения
     window = SwissKnifeApp()
-    window.setWindowIcon(
-        QIcon(swiss_k_config.icon_path)
-    )  # Устанавливаем иконку для окна
+    window.setWindowIcon(QIcon(swiss_k_config.icon_path))  # Устанавливаем иконку для окна
     window.show()
     sys.exit(app.exec_())
