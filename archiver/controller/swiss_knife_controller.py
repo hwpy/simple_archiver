@@ -32,7 +32,9 @@ class SwissKnifeController:
         files = self.view.get_files("Выберите файлы для архивации")
         if files:
             archive_type = self.view.get_archive_type()
-            archive_path = self.view.get_save_path("Сохранить архив как", f"Архивы (*{archive_type})")
+            archive_path = self.view.get_save_path(
+                "Сохранить архив как", f"Архивы (*{archive_type})"
+            )
             if archive_path:
                 if not archive_path.endswith(archive_type):
                     archive_path += archive_type
@@ -44,3 +46,4 @@ class SwissKnifeController:
                         self.view.show_message("Успех", "Архивация завершена успешно!")
                 except Exception as e:
                     self.view.show_message("Ошибка", str(e), QMessageBox.Critical)
+

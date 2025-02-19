@@ -26,7 +26,7 @@ class ArchiveManager:
             search_paths = [
                 r"C:\Program Files\WinRAR\{0}.exe",
                 r"C:\Program Files (x86)\WinRAR\{0}.exe",
-                r"{0}.exe"  # Проверка PATH
+                r"{0}.exe",  # Проверка PATH
             ]
         elif Platform.OS == Platform.macOS:
             # Пути для macOS
@@ -35,7 +35,7 @@ class ArchiveManager:
                 "/opt/local/bin/{0}",
                 "/usr/bin/{0}",
                 "/opt/homebrew/bin/{0}",  # Для Homebrew на Apple Silicon
-                "{0}"  # Проверка PATH
+                "{0}",  # Проверка PATH
             ]
         else:
             # Для Linux и других ОС
@@ -50,10 +50,7 @@ class ArchiveManager:
                 if os.path.exists(full_path):
                     return full_path
                 # Проверяем версию в верхнем регистре
-                upper_path = os.path.join(
-                    os.path.dirname(full_path),
-                    rar_unrar.upper() + ".exe"
-                )
+                upper_path = os.path.join(os.path.dirname(full_path), rar_unrar.upper() + ".exe")
                 if os.path.exists(upper_path):
                     return upper_path
             else:
@@ -73,11 +70,11 @@ class ArchiveManager:
         # Последняя попытка найти через which/where
         try:
             cmd = "where" if Platform.OS == Platform.Windows else "which"
-            result = subprocess.check_output(
-                [cmd, rar_unrar],
-                stderr=subprocess.DEVNULL,
-                shell=True
-            ).decode().strip()
+            result = (
+                subprocess.check_output([cmd, rar_unrar], stderr=subprocess.DEVNULL, shell=True)
+                .decode()
+                .strip()
+            )
 
             if os.path.exists(result):
                 return result
@@ -101,25 +98,19 @@ class ArchiveManager:
                     zip_ref.extractall(extract_path)
             elif file_path.endswith(".rar"):
                 if not self.check_unrar_installed():
-                    raise Exception(
-                        "Для работы с .rar архивами необходимо установить unrar."
-                    )
+                    raise Exception("Для работы с .rar архивами необходимо установить unrar.")
                 with rarfile.RarFile(file_path, "r") as rar_ref:
                     if password:
                         rar_ref.setpassword(password)
                     rar_ref.extractall(extract_path)
             elif file_path.endswith(".7z"):
-                with py7zr.SevenZipFile(
-                    file_path, mode="r", password=password
-                ) as seven_zip_ref:
+                with py7zr.SevenZipFile(file_path, mode="r", password=password) as seven_zip_ref:
                     seven_zip_ref.extractall(extract_path)
             return True
         except Exception as e:
             raise Exception(f"Ошибка при разархивировании: {str(e)}")
 
-    def archive(
-        self, files: list, archive_path: str, archive_type: str, password: str = None
-    ):
+    def archive(self, files: list, archive_path: str, archive_type: str, password: str = None):
         try:
             if archive_type == ".zip":
                 with pyzipper.AESZipFile(
@@ -141,9 +132,7 @@ class ArchiveManager:
                 #     rar_cmd.insert(2, f"-p{password}")
                 # subprocess.run(rar_cmd, check=True)
             elif archive_type == ".7z":
-                with py7zr.SevenZipFile(
-                    archive_path, "w", password=password
-                ) as seven_zip_ref:
+                with py7zr.SevenZipFile(archive_path, "w", password=password) as seven_zip_ref:
                     for file in files:
                         seven_zip_ref.write(file, os.path.basename(file))
             return True
