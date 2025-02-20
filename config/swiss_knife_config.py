@@ -39,6 +39,8 @@ class SwissKnifeConfig:
             icon_path = get_resource_path(SwissKnifeConfig.win_icon_name)
         elif Platform.OS == Platform.macOS:
             icon_path = get_resource_path(SwissKnifeConfig.mac_icon_name)
+        elif Platform.OS == Platform.Linux:
+            icon_path = get_resource_path(SwissKnifeConfig.png_icon_name)
         return icon_path
 
 
