@@ -27,6 +27,12 @@ class ArchiveManager:
         else:
             executable = rar_unrar
 
+        # Если unrar не найден в ресурсах, ищем в системе
+        for path in os.environ["PATH"].split(os.pathsep):
+            candidate = os.path.join(path, executable)
+            if os.path.exists(candidate):
+                return candidate
+
         # Путь к unrar в ресурсах
         unrar_path = get_resource_path(os.path.join("resources", "unrar", executable))
 
