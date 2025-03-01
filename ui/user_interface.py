@@ -61,6 +61,7 @@ class UI:
         app.btn_archive.clicked.connect(app.archive)
         content_layout.addWidget(app.btn_archive)
 
+
 class UIWindows(UI):
     def __init__(self, app: SwissKnifeApp):
         super.__init__()
@@ -94,7 +95,6 @@ class UIWindows(UI):
         title_bar.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         title_bar.addWidget(app.btn_minimize)
         title_bar.addWidget(app.btn_close)
-
 
         main_layout.addLayout(title_bar)
         main_layout.addLayout(app.content_layout)
@@ -138,7 +138,7 @@ class UIWindows(UI):
                 hwnd,
                 DWMWA_WINDOW_CORNER_PREFERENCE,
                 ctypes.byref(ctypes.c_int(DWM_WINDOW_CORNER_PREFERENCE)),
-                ctypes.sizeof(ctypes.c_int)
+                ctypes.sizeof(ctypes.c_int),
             )
         except Exception as e:
             print("Ошибка при установке закругленных углов:", e)
@@ -160,8 +160,10 @@ class UIWindows(UI):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillPath(path, QBrush(QColor("#2d2d2d")))
 
+
 def gen_ui(app: SwissKnifeApp):
     ui = UI(app)
     if Platform.OS == Platform.Windows:
         ui = UIWindows(app)
     return ui
+
