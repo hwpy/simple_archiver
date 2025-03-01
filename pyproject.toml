@@ -1,0 +1,4 @@
+[tool.ruff]
+select = ["ALL"]
+ignore = ["D400", "D415", "RUF", "COM812"]
+line-length = 100
